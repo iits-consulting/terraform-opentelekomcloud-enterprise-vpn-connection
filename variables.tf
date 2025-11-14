@@ -115,14 +115,9 @@ variable "ipsec_policy" {
 
 variable "policy_rules" {
   type = list(object({
-    rule_index  = optional(number)
     destination = optional(string)
     source      = optional(list(string))
   }))
   description = "Policy based routing policy parameters for the VPN tunnel."
   default     = []
-  validation {
-    condition     = length(distinct(var.policy_rules[*].rule_index)) == length(var.policy_rules) || !can(coalesce(var.policy_rules[*].rule_index))
-    error_message = "Each policy rule must have a unique rule_index or rule_index should be left unset. OTC recommends leaving rule_index parameter unset."
-  }
 }
