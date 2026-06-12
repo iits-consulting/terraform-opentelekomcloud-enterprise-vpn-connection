@@ -115,8 +115,8 @@ variable "ipsec_policy" {
 
 variable "policy_rules" {
   type = list(object({
-    destination = optional(string)
-    source      = optional(list(string))
+    destination = optional(list(string))
+    source      = optional(string)
   }))
   description = "Policy based routing policy parameters for the VPN tunnel."
   default     = []

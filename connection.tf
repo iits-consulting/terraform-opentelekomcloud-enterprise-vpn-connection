@@ -74,8 +74,8 @@ resource "opentelekomcloud_enterprise_vpn_connection_v5" "connection" {
   dynamic "policy_rules" {
     for_each = var.policy_rules
     content {
-      destination = policy_rules.destination
-      source      = policy_rules.source
+      destination = policy_rules.value.destination
+      source      = policy_rules.value.source
     }
   }
 
