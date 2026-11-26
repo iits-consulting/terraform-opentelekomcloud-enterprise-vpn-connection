@@ -66,6 +66,12 @@ variable "psk" {
   default     = ""
 }
 
+variable "enable_monitor" {
+  type        = bool
+  description = "Create an OTC connection monitor for every connection. Set to false where the API creates the monitor itself (error VPN.0381 on apply, see README)."
+  default     = true
+}
+
 variable "enable_nqa" {
   type        = string
   description = "Enable NQA (Network Quality Analysis) for the connection. Depending on the configuration, it can break the connection if enabled."

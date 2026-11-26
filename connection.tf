@@ -86,6 +86,6 @@ resource "opentelekomcloud_enterprise_vpn_connection_v5" "connection" {
 }
 
 resource "opentelekomcloud_enterprise_vpn_connection_monitor_v5" "monitor" {
-  for_each      = opentelekomcloud_enterprise_vpn_connection_v5.connection
+  for_each      = var.enable_monitor ? opentelekomcloud_enterprise_vpn_connection_v5.connection : {}
   connection_id = each.value.id
 }

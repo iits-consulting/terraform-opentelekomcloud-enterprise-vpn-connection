@@ -92,6 +92,16 @@ It is designed to automatically determine the primary and secondary IP addresses
 
 For more detailed information regarding individual connection parameters please refer to: [OTC API Docs - Creating a VPN Connection](https://docs.otc.t-systems.com/virtual-private-network/api-ref/api_reference_enterprise_edition_vpn/apis_of_enterprise_edition_vpn/vpn_connection/creating_a_vpn_connection.html#vpn-api-0027)
 
+### Connection monitor
+
+The module creates an OTC connection monitor for every connection (`enable_monitor`, default `true`). The OTC API behavior changed at some point: on some projects the API now creates the monitor together with the connection, and the module's own monitor resource then fails on apply with
+
+```
+Error: error creating OpenTelekomCloud EVPN customer gateway: Bad request with: [POST https://vpn.<region>.otc.t-systems.com/v5/<project>/connection-monitors], error message: {"error_code":"VPN.0381","error_msg":"VPN connection <id> already has connection monitor", ...}
+```
+
+If you hit this error, set `enable_monitor = false`. The connection keeps the monitor the API created; it is just not managed by this module.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -130,6 +140,7 @@ No modules.
 | <a name="input_otc_gateway_id"></a> [otc\_gateway\_id](#input\_otc\_gateway\_id) | UUID of the enterprise VPN gateway to be used for this connection. | `string` | n/a | yes |
 | <a name="input_remote_gateway_addresses"></a> [remote\_gateway\_addresses](#input\_remote\_gateway\_addresses) | Remote gateway endpoint IPv4 or FQDN addresses. | `set(string)` | n/a | yes |
 | <a name="input_remote_subnets"></a> [remote\_subnets](#input\_remote\_subnets) | A list of remote subnet CIDR ranges. This parameter must be empty when the attachment\_type of the VPN gateway is set to er and vpn\_type is set to policy or bgp. | `set(string)` | n/a | yes |
+| <a name="input_enable_monitor"></a> [enable\_monitor](#input\_enable\_monitor) | Create an OTC connection monitor for every connection. Set to false where the API creates the monitor itself (error VPN.0381 on apply, see README). | `bool` | `true` | no |
 | <a name="input_enable_nqa"></a> [enable\_nqa](#input\_enable\_nqa) | Enable NQA (Network Quality Analysis) for the connection. Depending on the configuration, it can break the connection if enabled. | `string` | `false` | no |
 | <a name="input_ike_policy"></a> [ike\_policy](#input\_ike\_policy) | IKE (phase 1) policy parameters for the VPN tunnel. | <pre>object({<br/>    authentication_algorithm   = optional(string)<br/>    authentication_method      = optional(string)<br/>    encryption_algorithm       = optional(string)<br/>    dh_group                   = optional(string)<br/>    ike_version                = optional(string)<br/>    lifetime_seconds           = optional(number)<br/>    local_id_type              = optional(string)<br/>    local_id                   = optional(string)<br/>    peer_id_type               = optional(string)<br/>    peer_id                    = optional(string)<br/>    phase_one_negotiation_mode = optional(string)<br/>  })</pre> | `null` | no |
 | <a name="input_ike_policy_dpd"></a> [ike\_policy\_dpd](#input\_ike\_policy\_dpd) | IKE policy dead peer detection (DPD) parameters for the VPN tunnel. | <pre>object({<br/>    timeout  = optional(number)<br/>    interval = optional(number)<br/>    msg      = optional(string)<br/>  })</pre> | `null` | no |
